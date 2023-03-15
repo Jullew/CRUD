@@ -13,6 +13,16 @@ public class UserRepository {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    public User auth(String postLogin, String postPassword, String postApiKey) {
+        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE " +
+                "login = ? AND password = ? AND api_key = ?", BeanPropertyRowMapper.newInstance(User.class), postLogin, postPassword, postApiKey);
+    }
+
+    public int updateSessionKey(String postLogin, String postSessionKey) {
+        return jdbcTemplate.update("UPDATE users SET session_key=? WHERE login=?",
+                postSessionKey, postLogin);
+    }
+
     public List<User> getAll() {
         return jdbcTemplate.query("SELECT * FROM users",
                 BeanPropertyRowMapper.newInstance(User.class));

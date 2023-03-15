@@ -12,6 +12,18 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
+    @PostMapping("/auth")
+    public String auth(@RequestParam("login") String postLogin, @RequestParam("password") String postPassword, @RequestParam("api_key") String postApiKey) {
+        User userLogin = userRepository.auth(postLogin, postPassword, postApiKey);
+        if (userLogin != null) {
+            String sessionKey = "ACEFGHJKLMNPQRUVWXYabcdefhijkprstuvwx";
+            userRepository.updateSessionKey(postLogin,sessionKey);
+            return sessionKey;
+        } else {
+            return "false";
+        }
+    }
+
     @GetMapping("")
     public List<User> getAll() {
         return userRepository.getAll();
