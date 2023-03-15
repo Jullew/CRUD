@@ -1,13 +1,13 @@
-package pl.projektaeh.systemaukcji;
+package pl.aeh_project.auction_system;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SystemAukcjiApplication {
+public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(SystemAukcjiApplication.class, args);
+        SpringApplication.run(Application.class, args);
     }
 
 }

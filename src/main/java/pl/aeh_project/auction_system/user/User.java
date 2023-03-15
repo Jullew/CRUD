@@ -1,4 +1,4 @@
-package pl.projektaeh.systemaukcji;
+package pl.aeh_project.auction_system.user;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,13 +19,13 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 public class User {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long idUser;
+    private Long userId;
     private String login;
     private String password;
-    private String name;
-    private String surname;
-    private String keyApi;
-    private String keySession;
+    private String firstName;
+    private String lastName;
+    private String apiKey;
+    private String sessionKey;
     private LocalDate sessionEnd;
 }
 
