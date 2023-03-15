@@ -19,7 +19,7 @@ public class ProductRepository {
 
     public Product getById(int id) {
         return jdbcTemplate.queryForObject("SELECT * FROM products WHERE " +
-                "id = ?", BeanPropertyRowMapper.newInstance(Product.class), id);
+                "product_id = ?", BeanPropertyRowMapper.newInstance(Product.class), id);
     }
 
     public int save(List<Product> products) {
@@ -34,13 +34,13 @@ public class ProductRepository {
     }
 
     public int update(Product product) {
-        return jdbcTemplate.update("UPDATE products SET user_id=?, title=?, description=?, price=?" +
-                        "customer_id=?, end_date=? WHERE id=?",
+        return jdbcTemplate.update("UPDATE products SET description=?, price=?" +
+                        "customer_id=?, end_date=? WHERE product_id=?",
                 product.getUserId(), product.getTitle(), product.getDescription(), product.getPrice(),
                 product.getCustomerId(), product.getEndDate(), product.getProductId());
     }
 
     public int delete(int id) {
-        return jdbcTemplate.update("DELETE FROM product WHERE id=?", id);
+        return jdbcTemplate.update("DELETE FROM product WHERE product_id=?", id);
     }
 }
