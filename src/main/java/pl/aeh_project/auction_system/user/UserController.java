@@ -1,32 +1,43 @@
 package pl.aeh_project.auction_system.user;
 
+import jakarta.servlet.http.HttpServletRequest;
+import netscape.javascript.JSObject;
+import org.hibernate.mapping.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jackson.JsonObjectDeserializer;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.MediaType;
+import org.springframework.http.StreamingHttpOutputMessage;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/users")
 public class UserController {
 
     @Autowired
     UserRepository userRepository;
 
-    @PostMapping("/auth")
-    public String auth(@RequestParam("login") String postLogin, @RequestParam("password") String postPassword, @RequestParam("api_key") String postApiKey) {
-        User userLogin = userRepository.auth(postLogin, postPassword, postApiKey);
-        if (userLogin != null) {
-            String sessionKey = "ACEFGHJKLMNPQRUVWXYabcdefhijkprstuvwx";
-            userRepository.updateSessionKey(postLogin,sessionKey);
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+
+    @PostMapping(path = "/auth")
+    public ResponseEntity<Object> auth(@RequestBody User user)
+    {
+        User userLogin = userRepository.auth(user.getLogin(), user.getPassword());
+        if (userLogin != null)
+        {
+            String sessionKey = "test";
+            userRepository.updateSessionKey(user.getLogin(), sessionKey);
+            JSObject sessionKeyJson = new JSObject();
+
             return sessionKey;
         } else {
             return "false";
         }
-    }
-
-    @GetMapping("")
-    public List<User> getAll() {
-        return userRepository.getAll();
     }
 
     @GetMapping("/{id}")
@@ -44,15 +55,8 @@ public class UserController {
         User user = userRepository.getById(id);
 
         if (user != null) {
-            user.setLogin(updatedUser.getLogin());
-            user.setPassword(updatedUser.getPassword());
-            user.setFirstName(updatedUser.getFirstName());
-            user.setLastName(updatedUser.getLastName());
-            user.setApiKey(updatedUser.getApiKey());
-            user.setSessionKey(updatedUser.getSessionKey());
-            user.setSessionEnd(updatedUser.getSessionEnd());
 
-            userRepository.update(user);
+            userRepository.update(updatedUser);
 
         } else {
             throw new IllegalArgumentException("User is null");

@@ -13,9 +13,9 @@ public class UserRepository {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    public User auth(String postLogin, String postPassword, String postApiKey) {
+    public User auth(String postLogin, String postPassword) {
         return jdbcTemplate.queryForObject("SELECT * FROM users WHERE " +
-                "login = ? AND password = ? AND api_key = ?", BeanPropertyRowMapper.newInstance(User.class), postLogin, postPassword, postApiKey);
+                "login = ? AND password = ?", BeanPropertyRowMapper.newInstance(User.class), postLogin, postPassword);
     }
 
     public int updateSessionKey(String postLogin, String postSessionKey) {
@@ -37,7 +37,7 @@ public class UserRepository {
         users.forEach(user -> jdbcTemplate
                 .update("INSERT INTO users(login, password, first_name, last_name, api_key, session_key, session_end)" +
                                 " VALUES(?, ?, ?, ?, ?, ?, ?)",
-                        user.getLogin(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getApiKey(),
+                        user.getLogin(), user.getPassword(), user.getFirstName(), user.getLastName(),
                         user.getSessionKey(), user.getSessionEnd()
                 ));
 
@@ -45,9 +45,9 @@ public class UserRepository {
     }
 
     public int update(User user) {
-        return jdbcTemplate.update("UPDATE user SET login=?, password=?, first_name=?, last_name=?, api_key=?" +
-                        "sessino_key=?, session_end=? WHERE id=?",
-                user.getLogin(), user.getPassword(), user.getFirstName(), user.getLastName(),user.getApiKey(),
+        return jdbcTemplate.update("UPDATE user SET login=?, password=?, first_name=?, last_name=?, " +
+                        "session_key=?, session_end=? WHERE id=?",
+                user.getLogin(), user.getPassword(), user.getFirstName(), user.getLastName(),
                 user.getSessionKey(), user.getSessionEnd());
     }
 
