@@ -30,10 +30,22 @@ public class UserController {
         User userLogin = userRepository.auth(user.getLogin(), user.getPassword());
         if (userLogin != null)
         {
+            /*
+            List<JSONObject> entities = new ArrayList<JSONObject>();
+        for (Entity n : entityList) {
+            JSONObject entity = new JSONObject();
+            entity.put("aa", "bb");
+            entities.add(entity);
+        }
+        return new ResponseEntity<Object>(entities, HttpStatus.OK);
+
+             */
+
             String sessionKey = "test";
             userRepository.updateSessionKey(user.getLogin(), sessionKey);
             JSObject sessionKeyJson = new JSObject();
-            sessionKeyJson.put(sessionKey);
+            sessionKeyJson.put("test");
+
             return sessionKey;
         } else {
             return "false";
