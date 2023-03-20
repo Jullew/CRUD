@@ -32,14 +32,7 @@ public class ProductController {
         Product product = productRepository.getById(id);
 
         if (product != null) {
-            product.setUserId(updatedProduct.getUserId());
-            product.setTitle(updatedProduct.getTitle());
-            product.setDescription(updatedProduct.getDescription());
-            product.setPrice(updatedProduct.getPrice());
-            product.setCustomerId(updatedProduct.getCustomerId());
-            product.setEndDate(updatedProduct.getEndDate());
-
-            productRepository.update(product);
+            productRepository.update(updatedProduct);
 
         } else {
             throw new IllegalArgumentException("Product is null");
@@ -51,12 +44,7 @@ public class ProductController {
         Product product = productRepository.getById(id);
 
         if (product != null) {
-            if (product.getTitle() != null) product.setTitle(updatedProduct.getTitle());
-            if(product.getDescription() != null) product.setDescription(updatedProduct.getDescription());
-            if(product.getPrice() != null) product.setPrice(updatedProduct.getPrice());
-
-            productRepository.update(product);
-
+            productRepository.update(updatedProduct);
         } else {
             throw new IllegalArgumentException("Product is null");
         }

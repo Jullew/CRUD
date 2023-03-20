@@ -54,6 +54,7 @@ public class UserController {
     public void update(@PathVariable("id") int id, @RequestBody User updatedUser) {
         User user = userRepository.getById(id);
 
+        userRepository.update(updatedUser);
         if (user != null) {
 
             userRepository.update(updatedUser);
