@@ -26,5 +26,19 @@ public class User {
     private String lastName;
     private String sessionKey;
     private LocalDate sessionEnd;
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getPassword()
+    {
+        return password;
+    }
+
+    public String getSessionKey()
+    {
+        return sessionKey;
+    }
 }
 

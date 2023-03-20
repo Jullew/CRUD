@@ -33,19 +33,34 @@ public class UserController {
             String sessionKey = "test";
             userRepository.updateSessionKey(user.getLogin(), sessionKey);
             JSObject sessionKeyJson = new JSObject();
-
+            sessionKeyJson.put(sessionKey);
             return sessionKey;
         } else {
             return "false";
         }
     }
 
-    @GetMapping("/{id}")
-    public User getById(@PathVariable("id") int id) {
-        return userRepository.getById(id);
+    @PostMapping("/getByUsername")
+    public User getByUsername(@RequestBody User user) {
+        User checkSession = userRepository.checkSession(user.getLogin(), user.getSessionKey());
+        if(checkSession != null)  {
+            return userRepository.getByUsername(user.getLogin());
+        } else {
+            throw new IllegalArgumentException("Error");
+        }
     }
 
+   /* @PostMapping("/registerNewUser")
+    public User registerNewUser(@RequestBody User user) {
+
+    }*/
+
     @PostMapping("")
+    public List<User> getAll() {
+        return userRepository.getAll();
+    }
+
+    @PostMapping("/add")
     public int add(@RequestBody List<User> users) {
         return userRepository.save(users);
     }

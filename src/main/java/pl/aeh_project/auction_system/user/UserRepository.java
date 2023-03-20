@@ -19,9 +19,24 @@ public class UserRepository {
     }
 
     public int updateSessionKey(String postLogin, String postSessionKey) {
-        return jdbcTemplate.update("UPDATE users SET session_key=? WHERE login=?",
+        return jdbcTemplate.update("UPDATE users SET session_key=?, session_end=NOW()+INTERVAL 30 MINUTE WHERE login=?",
                 postSessionKey, postLogin);
     }
+
+    public User checkSession(String postLogin, String postSessionKey) {
+        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE " +
+                "login = ? AND session_key = ? AND session_end < NOW()", BeanPropertyRowMapper.newInstance(User.class),
+                postLogin, postSessionKey);
+    }
+
+    public User getByUsername(String postLogin)
+    {
+        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE " +
+                "login = ?", BeanPropertyRowMapper.newInstance(User.class), postLogin);
+    }
+
+
+
 
     public List<User> getAll() {
         return jdbcTemplate.query("SELECT * FROM users",
