@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
@@ -23,56 +24,48 @@ public class UserController {
     UserRepository userRepository;
 
     @PostMapping(path = "/auth")
-    public ResponseEntity<Object> auth(@RequestBody User user)
+    public HashMap<String, String> auth(@RequestBody User user)
     {
         User userLogin = userRepository.auth(user.getLogin(), user.getPassword());
+        HashMap<String, String> map = new HashMap<>();
+
         if (userLogin != null)
         {
-            /*
-            List<JSONObject> entities = new ArrayList<JSONObject>();
-        for (Entity n : entityList) {
-            JSONObject entity = new JSONObject();
-            entity.put("aa", "bb");
-            entities.add(entity);
-        }
-        return new ResponseEntity<Object>(entities, HttpStatus.OK);
 
-             */
+            UUID sessionKey = UUID.randomUUID();
+            String sessionK = sessionKey.toString().replaceAll("_", "");
 
-            String sessionKey = "test";
-            userRepository.updateSessionKey(user.getLogin(), sessionKey);
-            JSObject sessionKeyJson = new JSObject();
-            sessionKeyJson.put("test");
+            userRepository.updateSessionKey(user.getLogin(), sessionK);
+            map.put("token", sessionK);
 
-            return sessionKey;
         } else {
-            return "false";
+            map.put("error", "Error login");
         }
+
+        return map;
     }
 
-    @PostMapping("/getByUsername")
-    public User getByUsername(@RequestBody User user) {
+    @PostMapping("/getUser")
+    public User getUser(@RequestBody User user) {
         User checkSession = userRepository.checkSession(user.getLogin(), user.getSessionKey());
         if(checkSession != null)  {
-            return userRepository.getByUsername(user.getLogin());
+            return userRepository.getUser(user.getLogin());
         } else {
             throw new IllegalArgumentException("Error");
         }
     }
 
-   /* @PostMapping("/registerNewUser")
-    public User registerNewUser(@RequestBody User user) {
-
-    }*/
-
-    @PostMapping("")
-    public List<User> getAll() {
-        return userRepository.getAll();
-    }
-
-    @PostMapping("/add")
-    public int add(@RequestBody List<User> users) {
-        return userRepository.save(users);
+    @PostMapping("/addUser")
+    public String addUser(@RequestBody User user) {
+        User checkSession = userRepository.checkSession(user.getLogin(), user.getSessionKey());
+        if(checkSession == null)  {
+            throw new ExpiredSessionException();
+        }
+        if(userRepository.getUser(user.getLogin()) != null) {
+            throw new LoggedUserException();
+        }
+        userRepository.save(user);
+        return "Add new user";
     }
 
     @PutMapping("/{id}")

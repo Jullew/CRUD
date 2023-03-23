@@ -29,7 +29,7 @@ public class UserRepository {
                 postLogin, postSessionKey);
     }
 
-    public User getByUsername(String postLogin)
+    public User getUser(String postLogin)
     {
         return jdbcTemplate.queryForObject("SELECT * FROM users WHERE " +
                 "login = ?", BeanPropertyRowMapper.newInstance(User.class), postLogin);
