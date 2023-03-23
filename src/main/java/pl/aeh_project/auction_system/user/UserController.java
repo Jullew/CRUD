@@ -9,6 +9,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.http.StreamingHttpOutputMessage;
 import org.springframework.web.bind.annotation.*;
+import pl.aeh_project.auction_system.exceptions.ExpiredSessionException;
+import pl.aeh_project.auction_system.exceptions.LoggedUserException;
+import pl.aeh_project.auction_system.exceptions.UnloggedUserException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +58,18 @@ public class UserController {
         }
     }
 
+    @PostMapping("/getAllUsers")
+    public List<User> getAllUsers(@RequestBody List<User> users, User user) {
+        User checkSession = userRepository.checkSession(user.getLogin(), user.getSessionKey());
+        if(checkSession == null)  {
+            throw new ExpiredSessionException();
+        }
+        if(userRepository.getUser(user.getLogin()) == null) {
+            throw new UnloggedUserException();
+        }
+        return userRepository.getAll();
+    }
+
     @PostMapping("/addUser")
     public String addUser(@RequestBody User user) {
         User checkSession = userRepository.checkSession(user.getLogin(), user.getSessionKey());
@@ -68,19 +83,19 @@ public class UserController {
         return "Add new user";
     }
 
-    @PutMapping("/{id}")
-    public void update(@PathVariable("id") int id, @RequestBody User updatedUser) {
-        User user = userRepository.getById(id);
-
-        userRepository.update(updatedUser);
-        if (user != null) {
-
-            userRepository.update(updatedUser);
-
-        } else {
-            throw new IllegalArgumentException("User is null");
+    @PutMapping("/updateUser")
+    public String updateUser(@RequestBody User user) {
+        User checkSession = userRepository.checkSession(user.getLogin(), user.getSessionKey());
+        if (checkSession == null) {
+            throw new ExpiredSessionException();
         }
+        if (userRepository.getUser(user.getLogin()) == null) {
+            throw new UnloggedUserException();
+        }
+        userRepository.update(user);
+        return "Update user";
     }
+
 
     @DeleteMapping("/{id}")
     public int delete(@PathVariable("id") int id) {

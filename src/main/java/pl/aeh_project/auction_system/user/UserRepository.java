@@ -59,6 +59,14 @@ public class UserRepository {
         return 1;
     }
 
+    public int save(User user) {
+        return jdbcTemplate
+                .update("INSERT INTO users(login, password, first_name, last_name, api_key, session_key, session_end)" +
+                                " VALUES(?, ?, ?, ?, ?, ?, ?)",
+                        user.getLogin(), user.getPassword(), user.getFirstName(), user.getLastName(),
+                        user.getSessionKey(), user.getSessionEnd());
+    }
+
     public int update(User user) {
         return jdbcTemplate.update("UPDATE user SET login=?, password=?, first_name=?, last_name=?, " +
                         "session_key=?, session_end=? WHERE id=?",
