@@ -15,14 +15,12 @@ import java.util.List;
 import java.util.Random;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/users")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
 
     @Autowired
     UserRepository userRepository;
-
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
 
     @PostMapping(path = "/auth")
     public ResponseEntity<Object> auth(@RequestBody User user)
