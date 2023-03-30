@@ -18,10 +18,13 @@ import java.util.UUID;
 @RequestMapping("/users")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequiredArgsConstructor
+
+/* Controller - klasa, która obsługuje zapytania wysyłane przez przeglądarkę do użytkownika */
 public class UserController {
 
     private final UserService userService;
 
+    /* Autentykacja */
     @PostMapping(path = "/auth")
     public HashMap<String, String> auth(@RequestBody User user)
     {
@@ -40,12 +43,13 @@ public class UserController {
 
             map.put("token", sessionK);
         } else {
-            map.put("error", "Error login");
+            map.put("Error", "Error login");
         }
 
         return map;
     }
 
+    /* Pobieranie użytkownika */
     @PostMapping("/getUser")
     public User getUser(@RequestBody User user) {
         Optional<User> checkSession = userService.checkSession(user.getLogin(), user.getSessionKey());
@@ -55,6 +59,7 @@ public class UserController {
         return checkSession.get();
     }
 
+    /* Pobieranie wszystkich użytkowników */
     @PostMapping("/getAllUsers")
     public List<User> getAllUsers(@RequestBody User user) {
         validateUser(user);
@@ -62,12 +67,14 @@ public class UserController {
     }
 
 
+    /* Dodawanie użytkownika */
     @PostMapping("/addUser")
     public String addUser(@RequestBody User user) {
         userService.update(user);
         return "Add new user";
     }
 
+    /* Modyfikowanie użytkownika */
     @PutMapping("/updateUser")
     public String updateUser(@RequestBody User user) {
         validateUser(user);
@@ -75,11 +82,13 @@ public class UserController {
         return "Update user";
     }
 
+    /* Usuwanie użytkownika */
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") Long id) {
         userService.delete(id);
     }
 
+    /* Walidacja zalogowania, metoda wykorzystywana w powyższych metodach */
     private void validateUser(User user) {
         Optional<User> checkSession = userService.checkSession(user.getLogin(), user.getSessionKey());
         if(checkSession.isEmpty())  {

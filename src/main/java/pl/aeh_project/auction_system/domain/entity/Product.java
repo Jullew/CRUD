@@ -26,6 +26,8 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @Entity
 @Table(name = "PRODUCTS")
+
+/* Klasa reprezentująca produkt */
 public class Product {
     @Id
     @GeneratedValue(strategy = IDENTITY)

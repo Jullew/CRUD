@@ -13,6 +13,8 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+
+/* Klasa service to klasa, która oferuje logikę biznesową, która jest wykorzystywana w klasach controller */
 public class UserService {
 
     private final UserRepository userRepository;

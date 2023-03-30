@@ -8,6 +8,9 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
+
+/* Interfejs odpowiedzialny za komunikację bazodanową. Rozszerza interfejs JpaRepository (Java Persistence API), czyli
+  konkretny standard określający przebieg komunikacji między programem a bazą danych */
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findUserByLoginAndPassword(String login, String password);

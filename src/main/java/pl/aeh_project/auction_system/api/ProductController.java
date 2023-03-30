@@ -13,25 +13,31 @@ import pl.aeh_project.auction_system.logic.ProductService;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/products")
 @RequiredArgsConstructor
+
+/* Controller - klasa, która obsługuje zapytania wysyłane przez przeglądarkę do użytkownika */
 public class ProductController {
 
     private final ProductService productService;
 
+    /* Pobierz wszystkie produkty */
     @GetMapping
     public List<Product> getAll() {
         return productService.getAll();
     }
 
+    /* Pobierz produkt po id */
     @GetMapping("/{id}")
     public Product getById(@PathVariable("id") Long id) {
         return productService.getById(id).get();
     }
 
+    /* Dodaj produkt */
     @PostMapping
     public void add(@RequestBody List<Product> products) {
         productService.saveAll(products);
     }
 
+    /* Modyfikuj produkt */
     @PutMapping
     public void update(@RequestBody Product updatedProduct) {
         Optional<Product> product = productService.getById(updatedProduct.getProductId());
@@ -42,6 +48,7 @@ public class ProductController {
         }
     }
 
+    /* Częściowo modyfikuj produkt */
     @PatchMapping
     public void partiallyUpdate(@RequestBody Product updatedProduct) {
         Optional<Product> product = productService.getById(updatedProduct.getProductId());
@@ -52,6 +59,7 @@ public class ProductController {
         }
     }
 
+    /* Usuń produkt */
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") Long id) {
         productService.delete(id);

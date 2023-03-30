@@ -10,6 +10,9 @@ import pl.aeh_project.auction_system.domain.entity.Product;
 import java.util.List;
 
 @Repository
+
+/* Interfejs odpowiedzialny za komunikację bazodanową. Rozszerza interfejs JpaRepository (Java Persistence API), czyli
+  konkretny standard określający przebieg komunikacji między programem a bazą danych */
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
 }
