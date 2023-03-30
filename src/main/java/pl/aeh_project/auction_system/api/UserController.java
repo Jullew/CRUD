@@ -19,7 +19,7 @@ import java.util.UUID;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequiredArgsConstructor
 
-/* Controller - klasa, która obsługuje zapytania wysyłane przez przeglądarkę do użytkownika */
+/* Controller - klasa, która obsługuje zapytania wysyłane przez przeglądarkę od użytkownika */
 public class UserController {
 
     private final UserService userService;
