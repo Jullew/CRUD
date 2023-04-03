@@ -16,6 +16,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
+
     public List<Product> getAll() {
         return productRepository.findAll();
     }
@@ -28,8 +29,8 @@ public class ProductService {
         productRepository.saveAll(products);
     }
 
-    public Product save(Product product) {
-        return productRepository.save(product);
+    public void save(Product product) {
+        productRepository.save(product);
     }
 
     public void delete(Long id) {

@@ -1,10 +1,12 @@
 package pl.aeh_project.auction_system.api;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pl.aeh_project.auction_system.domain.entity.User;
 import pl.aeh_project.auction_system.exceptions.ExpiredSessionException;
 import pl.aeh_project.auction_system.exceptions.LoggedUserException;
+import pl.aeh_project.auction_system.exceptions.NoUserException;
 import pl.aeh_project.auction_system.exceptions.UnloggedUserException;
 import pl.aeh_project.auction_system.logic.UserService;
 
@@ -15,17 +17,18 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequiredArgsConstructor
 
 /* Controller - klasa, która obsługuje zapytania wysyłane przez przeglądarkę od użytkownika */
 public class UserController {
 
+    @Autowired
     private final UserService userService;
 
     /* Autentykacja */
-    @PostMapping(path = "/auth")
+    @PostMapping(path = "/authentication")
     public HashMap<String, String> auth(@RequestBody User user)
     {
         Optional<User> userLogin = userService.auth(user.getLogin(), user.getPassword());
@@ -50,17 +53,17 @@ public class UserController {
     }
 
     /* Pobieranie użytkownika */
-    @PostMapping("/getUser")
+    @PostMapping("/get")
     public User getUser(@RequestBody User user) {
         Optional<User> checkSession = userService.checkSession(user.getLogin(), user.getSessionKey());
         if (checkSession.isEmpty())  {
-            throw new IllegalArgumentException("Error");
+            throw new NoUserException();
         }
         return checkSession.get();
     }
 
     /* Pobieranie wszystkich użytkowników */
-    @PostMapping("/getAllUsers")
+    @PostMapping("/getAll")
     public List<User> getAllUsers(@RequestBody User user) {
         validateUser(user);
         return userService.getAll();
@@ -68,14 +71,14 @@ public class UserController {
 
 
     /* Dodawanie użytkownika */
-    @PostMapping("/addUser")
+    @PostMapping("/add")
     public String addUser(@RequestBody User user) {
         userService.update(user);
         return "Add new user";
     }
 
     /* Modyfikowanie użytkownika */
-    @PutMapping("/updateUser")
+    @PutMapping("/update")
     public String updateUser(@RequestBody User user) {
         validateUser(user);
         userService.update(user);
@@ -83,7 +86,7 @@ public class UserController {
     }
 
     /* Usuwanie użytkownika */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable("id") Long id) {
         userService.delete(id);
     }
