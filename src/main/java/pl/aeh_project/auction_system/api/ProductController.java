@@ -50,7 +50,7 @@ public class ProductController {
     }
 
     /* Modyfikuj produkt */
-    @PutMapping("modify")
+    @PutMapping("/modify")
     public void update(@RequestBody Product updatedProduct) {
         Optional<Product> product = productService.getById(updatedProduct.getProductId());
         if (product.isPresent()) {
@@ -61,7 +61,7 @@ public class ProductController {
     }
 
     /* Modyfikuj produkt */
-    @PutMapping("setNewPrice")
+    @PutMapping("/setNewPrice")
     public void setNewPrice(@RequestBody Product updatedProduct, BigDecimal newPrice) {
         if(newPrice.compareTo(updatedProduct.getPrice()) <= 0){
             throw new WrongNewPriceException();
