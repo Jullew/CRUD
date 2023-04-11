@@ -10,10 +10,13 @@ import java.util.Optional;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.aeh_project.auction_system.domain.entity.Product;
+import pl.aeh_project.auction_system.domain.entity.User;
 import pl.aeh_project.auction_system.exceptions.EndOfAuctionException;
 import pl.aeh_project.auction_system.exceptions.NoProductException;
+import pl.aeh_project.auction_system.exceptions.UnloggedUserException;
 import pl.aeh_project.auction_system.exceptions.WrongNewPriceException;
 import pl.aeh_project.auction_system.logic.ProductService;
+import pl.aeh_project.auction_system.logic.UserService;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -25,6 +28,9 @@ public class ProductController {
 
     @Autowired
     private final ProductService productService;
+
+    @Autowired
+    private final UserService userService;
 
 
     /* Pobierz wszystkie produkty */
@@ -60,9 +66,12 @@ public class ProductController {
         }
     }
 
-    /* Modyfikuj produkt */
+    /* Przebijanie oferty */
     @PutMapping("/setNewPrice")
-    public void setNewPrice(@RequestBody Product updatedProduct, BigDecimal newPrice) {
+    public void setNewPrice(@RequestBody Product updatedProduct, BigDecimal newPrice, User user) {
+        if(userService.checkSession(user.getLogin(), user.getSessionKey()).isEmpty()){
+            throw new UnloggedUserException();
+        }
         if(newPrice.compareTo(updatedProduct.getPrice()) <= 0){
             throw new WrongNewPriceException();
         }
