@@ -67,6 +67,7 @@ public class ProductController {
     }
 
     /* Przebijanie oferty */
+
     @PutMapping("/setNewPrice")
     public void setNewPrice(@RequestBody Product updatedProduct, BigDecimal newPrice, User user) {
         if(userService.checkSession(user.getLogin(), user.getSessionKey()).isEmpty()){
@@ -83,6 +84,7 @@ public class ProductController {
             throw new NoProductException();
         }
         updatedProduct.setPrice(newPrice);
+        updatedProduct.setUserId(user.getUserId());
         productService.save(updatedProduct);
     }
 
