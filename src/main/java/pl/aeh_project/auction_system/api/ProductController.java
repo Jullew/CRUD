@@ -67,25 +67,26 @@ public class ProductController {
     }
 
     /* Przebijanie oferty */
-
     @PutMapping("/setNewPrice")
-    public void setNewPrice(@RequestBody Product updatedProduct, BigDecimal newPrice, User user) {
-        if(userService.checkSession(user.getLogin(), user.getSessionKey()).isEmpty()){
+    public void setNewPrice(@RequestBody NewPriceDTO newPriceDTO) {
+        Optional<User> user = userService.checkSession(newPriceDTO.getLogin(), newPriceDTO.getSessionKey());
+        Optional<Product> productOptional = productService.getById(newPriceDTO.getProductId());
+
+        if(user.isEmpty()){
             throw new UnloggedUserException();
         }
-        if(newPrice.compareTo(updatedProduct.getPrice()) <= 0){
-            throw new WrongNewPriceException();
-        }
-        if(updatedProduct.getEndDate().compareTo(LocalDate.now()) < 0){
-            throw new EndOfAuctionException();
-        }
-        Optional<Product> product = productService.getById(updatedProduct.getProductId());
-        if (product.isEmpty()) {
+        if(productOptional.isEmpty()){
             throw new NoProductException();
         }
-        updatedProduct.setPrice(newPrice);
-        updatedProduct.setUserId(user.getUserId());
-        productService.save(updatedProduct);
+        Product product = productOptional.get();
+        if(product.getEndDate().compareTo(LocalDate.now()) < 0){
+            throw new EndOfAuctionException();
+        }
+        if (product.getPrice().compareTo(newPriceDTO.getNewProductPrice()) >= 0) {
+            throw new WrongNewPriceException();
+        }
+        product.setPrice(newPriceDTO.getNewProductPrice());
+        product.setUserId(newPriceDTO.getProductId());
     }
 
     /* Usuń produkt */
