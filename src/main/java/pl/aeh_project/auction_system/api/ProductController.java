@@ -67,7 +67,7 @@ public class ProductController {
     }
 
     /* Przebijanie oferty */
-    @PutMapping("/setNewPrice")
+    @PostMapping("/setNewPrice")
     public void setNewPrice(@RequestBody NewPriceDTO newPriceDTO) {
         Optional<User> user = userService.checkSession(newPriceDTO.getLogin(), newPriceDTO.getSessionKey());
         Optional<Product> productOptional = productService.getById(newPriceDTO.getProductId());
@@ -78,7 +78,9 @@ public class ProductController {
         if(productOptional.isEmpty()){
             throw new NoProductException();
         }
+
         Product product = productOptional.get();
+
         if(product.getEndDate().compareTo(LocalDate.now()) < 0){
             throw new EndOfAuctionException();
         }
