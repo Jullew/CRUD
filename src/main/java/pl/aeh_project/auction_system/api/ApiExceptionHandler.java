@@ -7,8 +7,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import pl.aeh_project.auction_system.exceptions.*;
 
+/* Przechwytywanie wyjątków z aplikacji */
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+
+
+    @ExceptionHandler(DoubleBiddingException.class)
+    public ResponseEntity<Object> handle(DoubleBiddingException doubleBindingException){
+        return new ResponseEntity<>(doubleBindingException.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(EndOfAuctionException.class)
     public ResponseEntity<Object> handle(EndOfAuctionException endOfAuctionException) {

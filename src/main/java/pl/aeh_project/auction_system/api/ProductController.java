@@ -11,10 +11,7 @@ import java.util.Optional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.aeh_project.auction_system.domain.entity.Product;
 import pl.aeh_project.auction_system.domain.entity.User;
-import pl.aeh_project.auction_system.exceptions.EndOfAuctionException;
-import pl.aeh_project.auction_system.exceptions.NoProductException;
-import pl.aeh_project.auction_system.exceptions.UnloggedUserException;
-import pl.aeh_project.auction_system.exceptions.WrongNewPriceException;
+import pl.aeh_project.auction_system.exceptions.*;
 import pl.aeh_project.auction_system.logic.ProductService;
 import pl.aeh_project.auction_system.logic.UserService;
 
@@ -69,17 +66,22 @@ public class ProductController {
     /* Przebijanie oferty */
     @PostMapping("/setNewPrice")
     public void setNewPrice(@RequestBody NewPriceDTO newPriceDTO) {
-        Optional<User> user = userService.checkSession(newPriceDTO.getLogin(), newPriceDTO.getSessionKey());
+        Optional<User> optionalUser = userService.checkSession(newPriceDTO.getLogin(), newPriceDTO.getSessionKey());
         Optional<Product> productOptional = productService.getById(newPriceDTO.getProductId());
 
-        if(user.isEmpty()){
+        if(optionalUser.isEmpty()){
             throw new UnloggedUserException("You are not logged in");
         }
         if(productOptional.isEmpty()){
             throw new NoProductException("There is no such product");
         }
 
+        User user = optionalUser.get();
         Product product = productOptional.get();
+
+        if(product.getCustomerId().equals(user.getUserId())){
+            throw new DoubleBiddingException("User beats the offer after himself");
+        }
 
         if(product.getEndDate().compareTo(LocalDate.now()) < 0){
             throw new EndOfAuctionException("Auction time has passed");
@@ -89,7 +91,7 @@ public class ProductController {
         }
 
         product.setPrice(newPriceDTO.getNewProductPrice());
-        product.setUserId(newPriceDTO.getProductId());
+        product.setUserId(user.getUserId());
         productService.save(product);
     }
 
