@@ -57,7 +57,7 @@ public class UserController {
     public User getUser(@RequestBody UserDTO userDTO) {
         Optional<User> checkSession = userService.checkSession(userDTO.getLogin(), userDTO.getSessionKey());
         if (checkSession.isEmpty())  {
-            throw new NoUserException();
+            throw new UnloggedUserException("You are not logged in");
         }
         return checkSession.get();
     }
@@ -67,7 +67,7 @@ public class UserController {
     public List<User> getAllUsers(@RequestBody UserDTO userDTO) {
         Optional<User> user = userService.checkSession(userDTO.getLogin(), userDTO.getSessionKey());
         if(user.isEmpty()){
-            throw new NoUserException();
+            throw new UnloggedUserException("You are not logged in");
         }
         validateUser(user.get());
         return userService.getAll();
@@ -98,11 +98,11 @@ public class UserController {
     /* Walidacja zalogowania, metoda wykorzystywana w powyższych metodach */
     private void validateUser(User user) {
         Optional<User> checkSession = userService.checkSession(user.getLogin(), user.getSessionKey());
-        if(checkSession.isEmpty())  {
-            throw new ExpiredSessionException();
-        }
         if(userService.getUserByLogin(user.getLogin()).isEmpty()) {
-            throw new UnloggedUserException();
+            throw new NoUserException("There is no such user");
+        }
+        if(checkSession.isEmpty())  {
+            throw new ExpiredSessionException("Session has expired");
         }
     }
 

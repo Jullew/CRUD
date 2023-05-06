@@ -44,7 +44,7 @@ public class ProductController {
     public Product getById(@PathVariable("id") Long id) {
         Optional<Product> product = productService.getById(id);
         if(product.isEmpty()){
-            throw new NoProductException();
+            throw new NoProductException("There is no such product");
         }
         return product.get();
     }
@@ -73,19 +73,19 @@ public class ProductController {
         Optional<Product> productOptional = productService.getById(newPriceDTO.getProductId());
 
         if(user.isEmpty()){
-            throw new UnloggedUserException();
+            throw new UnloggedUserException("You are not logged in");
         }
         if(productOptional.isEmpty()){
-            throw new NoProductException();
+            throw new NoProductException("There is no such product");
         }
 
         Product product = productOptional.get();
 
         if(product.getEndDate().compareTo(LocalDate.now()) < 0){
-            throw new EndOfAuctionException();
+            throw new EndOfAuctionException("Auction time has passed");
         }
         if (product.getPrice().compareTo(newPriceDTO.getNewProductPrice()) >= 0) {
-            throw new WrongNewPriceException();
+            throw new WrongNewPriceException("New price is lower than current price");
         }
 
         product.setPrice(newPriceDTO.getNewProductPrice());
