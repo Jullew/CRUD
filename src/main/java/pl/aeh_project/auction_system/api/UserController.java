@@ -54,8 +54,8 @@ public class UserController {
 
     /* Pobieranie użytkownika */
     @PostMapping("/get")
-    public User getUser(@RequestBody User user) {
-        Optional<User> checkSession = userService.checkSession(user.getLogin(), user.getSessionKey());
+    public User getUser(@RequestBody UserDTO userDTO) {
+        Optional<User> checkSession = userService.checkSession(userDTO.getLogin(), userDTO.getSessionKey());
         if (checkSession.isEmpty())  {
             throw new NoUserException();
         }
