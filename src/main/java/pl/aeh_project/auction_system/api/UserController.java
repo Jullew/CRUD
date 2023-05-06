@@ -64,8 +64,12 @@ public class UserController {
 
     /* Pobieranie wszystkich użytkowników */
     @PostMapping("/getAll")
-    public List<User> getAllUsers(@RequestBody User user) {
-        validateUser(user);
+    public List<User> getAllUsers(@RequestBody UserDTO userDTO) {
+        Optional<User> user = userService.checkSession(userDTO.getLogin(), userDTO.getSessionKey());
+        if(user.isEmpty()){
+            throw new NoUserException();
+        }
+        validateUser(user.get());
         return userService.getAll();
     }
 

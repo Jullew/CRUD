@@ -87,8 +87,10 @@ public class ProductController {
         if (product.getPrice().compareTo(newPriceDTO.getNewProductPrice()) >= 0) {
             throw new WrongNewPriceException();
         }
+
         product.setPrice(newPriceDTO.getNewProductPrice());
         product.setUserId(newPriceDTO.getProductId());
+        productService.save(product);
     }
 
     /* Usuń produkt */
