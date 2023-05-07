@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import pl.aeh_project.auction_system.api.dto.ModifyProductDTO;
+import pl.aeh_project.auction_system.api.dto.NewPriceDTO;
+import pl.aeh_project.auction_system.api.dto.ProductDTO;
 import pl.aeh_project.auction_system.domain.entity.Product;
 import pl.aeh_project.auction_system.domain.entity.User;
 import pl.aeh_project.auction_system.exceptions.*;

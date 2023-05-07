@@ -2,7 +2,7 @@ package pl.aeh_project.auction_system.logic;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.aeh_project.auction_system.api.ProductDTO;
+import pl.aeh_project.auction_system.api.dto.ProductDTO;
 import pl.aeh_project.auction_system.domain.entity.Product;
 import pl.aeh_project.auction_system.domain.repository.ProductRepository;
 

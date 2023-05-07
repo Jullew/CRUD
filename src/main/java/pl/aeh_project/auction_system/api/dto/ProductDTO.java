@@ -1,4 +1,4 @@
-package pl.aeh_project.auction_system.api;
+package pl.aeh_project.auction_system.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,8 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ModifyProductDTO {
-    private Long productId;
+public class ProductDTO {
     private Long userId;
     private String title;
     private String description;

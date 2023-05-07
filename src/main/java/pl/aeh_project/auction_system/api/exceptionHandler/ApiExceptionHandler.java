@@ -1,4 +1,4 @@
-package pl.aeh_project.auction_system.api;
+package pl.aeh_project.auction_system.api.exceptionHandler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
