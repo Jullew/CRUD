@@ -3,7 +3,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -48,8 +47,8 @@ public class ProductController {
 
     /* Dodaj produkt */
     @PostMapping("/add")
-    public void add(@RequestBody List<Product> products) {
-        productService.saveAll(products);
+    public void add(@RequestBody ProductDTO productDTO) {
+        productService.save(productService.convertDTOToEntity(productDTO));
     }
 
     /* Modyfikuj produkt */
@@ -83,7 +82,7 @@ public class ProductController {
             throw new DoubleBiddingException("User beats the offer after himself");
         }
 
-        if(product.getEndDate().compareTo(LocalDate.now()) < 0){
+        if(product.getEndDate().isBefore(LocalDate.now())){
             throw new EndOfAuctionException("Auction time has passed");
         }
         if (product.getPrice().compareTo(newPriceDTO.getNewProductPrice()) >= 0) {

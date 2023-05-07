@@ -1,13 +1,10 @@
 package pl.aeh_project.auction_system.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,14 +13,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.util.Date;
+
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "PRODUCTS")
 
@@ -38,4 +36,6 @@ public class Product {
     private BigDecimal price;
     private Long customerId;
     private LocalDate endDate;
+
+
 }
