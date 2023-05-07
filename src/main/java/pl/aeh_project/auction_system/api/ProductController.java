@@ -53,13 +53,21 @@ public class ProductController {
 
     /* Modyfikuj produkt */
     @PutMapping("/modify")
-    public void update(@RequestBody Product updatedProduct) {
-        Optional<Product> product = productService.getById(updatedProduct.getProductId());
-        if (product.isPresent()) {
-            productService.save(updatedProduct);
-        } else {
-            throw new IllegalArgumentException("Product is null");
+    public void update(@RequestBody ModifyProductDTO modifyProductDTO) {
+        Optional<Product> product = productService.getById(modifyProductDTO.getProductId());
+        if(product.isEmpty()){
+            throw new NoProductException("There is no such product");
         }
+
+        productService.save(productService.convertDTOToEntity(
+                new ProductDTO(
+                modifyProductDTO.getUserId(),
+                modifyProductDTO.getTitle(),
+                modifyProductDTO.getDescription(),
+                modifyProductDTO.getPrice(),
+                modifyProductDTO.getEndDate()
+        )
+        ));
     }
 
     /* Przebijanie oferty */
