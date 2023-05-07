@@ -91,7 +91,7 @@ public class ProductController {
         }
 
         product.setPrice(newPriceDTO.getNewProductPrice());
-        product.setUserId(user.getUserId());
+        product.setCustomerId(user.getUserId());
         productService.save(product);
     }
 
