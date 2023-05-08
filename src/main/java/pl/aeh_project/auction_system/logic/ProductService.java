@@ -121,7 +121,7 @@ public class ProductService {
     /* Metoda pomocnicza dla metody convertNewPriceDto */
     /* Sprawdzanie warunków */
     private void checkProductConditions(Product product, User user, BidProductDto bidProductDto) {
-        if(product.getCustomerId().equals(user.getUserId())){
+        if(product.getCustomerId() != null && product.getCustomerId().equals(user.getUserId())){
             throw new DoubleBiddingException("User beats the offer after himself");
         }
         if(product.getEndDate().isBefore(LocalDate.now())){

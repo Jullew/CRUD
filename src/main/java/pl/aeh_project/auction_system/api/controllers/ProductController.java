@@ -49,7 +49,7 @@ public class ProductController {
 
     /**
      * Dodawanie produktu
-     * WYMAGANE DANE w ProductDto:
+     * WYMAGANE DANE:
      * String login;
      * String sessionKey;
      * String title;
@@ -65,7 +65,7 @@ public class ProductController {
 
     /**
      * Modyfikacja produktu
-     * WYMAGANE DANE w ModifyProductDto:
+     * WYMAGANE DANE:
      *Long productId;
      *String login;
      *String sessionKey;
@@ -82,7 +82,7 @@ public class ProductController {
 
     /**
      * Przebijanie oferty
-     * WYMAGANE DANE w NewPriceDto:
+     * WYMAGANE DANE:
      * String login;
      * String sessionKey;
      * Long productId;
