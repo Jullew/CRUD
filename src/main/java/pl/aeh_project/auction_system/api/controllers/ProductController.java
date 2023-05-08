@@ -42,7 +42,7 @@ public class ProductController {
      * Long id;
      */
     /* Zmieniłbym na get/{id} */
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public Product get(@PathVariable("id") Long id) {
         return productService.get(id);
     }
@@ -57,6 +57,7 @@ public class ProductController {
      * BigDecimal price;
      * LocalDate endDate;
      */
+
     @PostMapping("/add")
     public void add(@RequestBody @NonNull AddProductDto product) {
         userService.loginVerification(product.getLogin(), product.getSessionKey());
@@ -74,8 +75,9 @@ public class ProductController {
      *BigDecimal price;
      *LocalDate endDate;
      */
+
     @PutMapping("/modify")
-    public void update(@RequestBody @NonNull ModifiedProductDto product) {
+    public void modify(@RequestBody @NonNull ModifiedProductDto product) {
         userService.loginVerification(product.getLogin(), product.getSessionKey());
         productService.saveModifiedProductDto(product);
     }
@@ -88,8 +90,8 @@ public class ProductController {
      * Long productId;
      * BigDecimal newProductPrice;
      */
-    /* zmieniłbym na /bid */
-    @PostMapping("/setNewPrice")
+
+    @PostMapping("/bid")
     public void bid(@RequestBody @NonNull BidProductDto product) {
         userService.loginVerification(product.getLogin(), product.getSessionKey());
         productService.saveNewPriceDto(product);
@@ -100,6 +102,7 @@ public class ProductController {
      * WYMAGANE DANE:
      * Long id;
      */
+
     @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable("id") Long id) {
         productService.delete(id);

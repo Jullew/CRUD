@@ -41,7 +41,7 @@ public class ProductService {
     private Product convertIdToProductEntity(Long id){
         Optional<Product> optionalProduct = productRepository.findById(id);
         if(optionalProduct.isEmpty()){
-            throw new NoProductException("There is no such product");
+            throw new NoProductException("There is no product with such id");
         }
         return optionalProduct.get();
     }
@@ -98,6 +98,7 @@ public class ProductService {
 
     /* ------------------------------------ */
 
+    /* Modyfikowanie produktu po przebiciu ceny */
     public void saveNewPriceDto(BidProductDto newPriceDTO){
         Product product = convertNewPriceDto(newPriceDTO);
         productRepository.save(product);
@@ -135,6 +136,7 @@ public class ProductService {
 
     /* ------------------------------------ */
 
+    /* Usuwanie produktu po id */
     public void delete(Long id) {
         productRepository.deleteById(id);
     }

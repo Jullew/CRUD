@@ -9,7 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserDTO {
+public class GetUserByLoginDto {
     private String login;
-    private String sessionKey;
 }

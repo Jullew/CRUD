@@ -1,19 +1,14 @@
 package pl.aeh_project.auction_system.api.controllers;
 
+import org.springframework.web.bind.annotation.RequestMapping;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
-import pl.aeh_project.auction_system.api.dto.userDto.UserDTO;
+import pl.aeh_project.auction_system.api.dto.userDto.*;
 import pl.aeh_project.auction_system.domain.entity.User;
-import pl.aeh_project.auction_system.exceptions.ExpiredSessionException;
-import pl.aeh_project.auction_system.exceptions.NoUserException;
-import pl.aeh_project.auction_system.exceptions.UnloggedUserException;
 import pl.aeh_project.auction_system.logic.UserService;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
@@ -25,83 +20,73 @@ public class UserController {
 
     private final UserService userService;
 
-    /* Autentykacja */
+    /**
+     * Autentykacja
+     * WYMAGANE DANE:
+     * String login;
+     * String password;
+     */
     @PostMapping(path = "/authentication")
-    public HashMap<String, String> auth(@RequestBody User user)
-    {
-        Optional<User> userLogin = userService.auth(user.getLogin(), user.getPassword());
-        HashMap<String, String> map = new HashMap<>();
-
-        if (userLogin.isPresent()) {
-            User loggedUser = userLogin.get();
-            UUID sessionKey = UUID.randomUUID();
-            String sessionK = sessionKey.toString().replaceAll("_", "");
-            LocalDateTime sessionEnd = LocalDateTime.now().plusMinutes(30L);
-
-            loggedUser.setSessionKey(sessionK);
-            loggedUser.setSessionEnd(sessionEnd);
-            userService.update(loggedUser);
-
-            map.put("token", sessionK);
-        } else {
-            map.put("Error", "Error login");
-        }
-
-        return map;
+    public void authentication(@RequestBody @NonNull UserAuthenticationDto user){
+        userService.authentication(user.getLogin(), user.getPassword());
     }
 
-    /* Pobieranie użytkownika */
-    @PostMapping("/get")
-    public User getUser(@RequestBody UserDTO userDTO) {
-        Optional<User> checkSession = userService.checkSession(userDTO.getLogin(), userDTO.getSessionKey());
-        if (checkSession.isEmpty())  {
-            throw new UnloggedUserException("You are not logged in");
-        }
-        return checkSession.get();
+    /**
+     * Pobieranie użytkownika po id
+     * WYMAGANE DANE:
+     * Long id;
+     */
+    @GetMapping("/get/{id}")
+    public User get(@PathVariable("id") Long id){
+        return userService.get(id);
     }
 
-    /* Pobieranie wszystkich użytkowników */
+    /**
+     * Pobieranie wszystkich produktów
+     * WYMAGANE DANE:
+     * brak;
+     */
     @PostMapping("/getAll")
-    public List<User> getAllUsers(@RequestBody UserDTO userDTO) {
-        Optional<User> user = userService.checkSession(userDTO.getLogin(), userDTO.getSessionKey());
-        if(user.isEmpty()){
-            throw new UnloggedUserException("You are not logged in");
-        }
-        validateUser(user.get());
+    public List<User> getAll() {
         return userService.getAll();
     }
 
 
-    /* Dodawanie użytkownika */
+    /**
+     * Dodawanie użytkownika
+     * WYMAGANE DANE:
+     * String login;
+     * String password;
+     * String firstName;
+     * String lastName;
+     */
     @PostMapping("/add")
-    public String addUser(@RequestBody User user) {
-        userService.update(user);
-        return "Add new user";
+    public void add(@RequestBody @NonNull AddUserDto user) {
+        userService.add(user);
     }
 
-    /* Modyfikowanie użytkownika */
-    @PutMapping("/update")
-    public String updateUser(@RequestBody User user) {
-        validateUser(user);
+    /**
+     * Modyfikacja użytkownika
+     * WYMAGANE DANE:
+     * Long id;
+     * String login;
+     * String password;
+     * String firstName;
+     * String lastName;
+     * String sessionKey;
+     */
+    @PutMapping("/modify")
+    public void modify(@RequestBody @NonNull ModifiedUserDto user) {
         userService.update(user);
-        return "Update user";
     }
 
-    /* Usuwanie użytkownika */
+    /**
+     * Usuwanie użytkownika
+     * WYMAGANE DANE:
+     * Long id;
+     */
     @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable("id") Long id) {
         userService.delete(id);
     }
-
-    /* Walidacja zalogowania, metoda wykorzystywana w powyższych metodach */
-    private void validateUser(User user) {
-        Optional<User> checkSession = userService.checkSession(user.getLogin(), user.getSessionKey());
-        if(userService.getUserByLogin(user.getLogin()).isEmpty()) {
-            throw new NoUserException("There is no such user");
-        }
-        if(checkSession.isEmpty())  {
-            throw new ExpiredSessionException("Session has expired");
-        }
-    }
-
 }
