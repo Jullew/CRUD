@@ -123,7 +123,10 @@ public class ProductService {
     /* Sprawdzanie warunków */
     private void checkProductConditions(Product product, User user, BidProductDto bidProductDto) {
         if(product.getCustomerId() != null && product.getCustomerId().equals(user.getUserId())){
-            throw new DoubleBiddingException("User beats the offer after himself");
+            throw new DoubleBiddingException("You are bidding on yourself");
+        }
+        if(product.getUserId().equals(user.getUserId())){
+            throw new OwnAuctionBidding("You are bidding on your own auction");
         }
         if(product.getEndDate().isBefore(LocalDate.now())){
             throw new EndOfAuctionException("Auction time has passed");

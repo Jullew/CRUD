@@ -12,6 +12,11 @@ import pl.aeh_project.auction_system.exceptions.*;
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 
+    @ExceptionHandler(OwnAuctionBidding.class)
+    public ResponseEntity<Object> handle(OwnAuctionBidding ownAuctionBidding){
+        return new ResponseEntity<>(ownAuctionBidding.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(WrongLoginException.class)
     public ResponseEntity<Object> handle(WrongLoginException wrongLoginException){
         return new ResponseEntity<>(wrongLoginException.getMessage(), HttpStatus.BAD_REQUEST);
