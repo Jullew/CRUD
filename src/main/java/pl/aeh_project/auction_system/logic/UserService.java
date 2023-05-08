@@ -1,12 +1,11 @@
 package pl.aeh_project.auction_system.logic;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Service;
 import pl.aeh_project.auction_system.domain.entity.User;
 import pl.aeh_project.auction_system.domain.repository.UserRepository;
+import pl.aeh_project.auction_system.exceptions.UnloggedUserException;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +23,7 @@ public class UserService {
     }
 
     public Optional<User> checkSession(String postLogin, String postSessionKey) {
-        return userRepository.findUserByLoginAndSessionKeyAndAndSessionEndIsAfter(postLogin, postSessionKey, LocalDateTime.now());
+        return userRepository.findUserByLoginAndSessionKeyAndSessionEndIsAfter(postLogin, postSessionKey, LocalDateTime.now());
     }
 
     public Optional<User> getUserByLogin(String postLogin) {
@@ -35,11 +34,19 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User update(User user) {
-        return userRepository.save(user);
+    public void update(User user) {
+        userRepository.save(user);
     }
 
     public void delete(Long id) {
         userRepository.deleteById(id);
     }
+
+    public void loginVerification(String login, String sessionKey){
+        Optional<User> optionalUser = checkSession(login, sessionKey);
+        if(optionalUser.isEmpty()){
+            throw new UnloggedUserException("You are not logged in");
+        }
+    }
+
 }
