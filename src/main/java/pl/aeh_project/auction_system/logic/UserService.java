@@ -24,7 +24,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     /* Autentykacja użytkownika */
-    public void authentication(String login, String password) {
+    public String authentication(String login, String password) {
         User user = checkingExistanceOfUser(login, password);
 
         String sessionKey = UUID.randomUUID().toString();
@@ -33,6 +33,7 @@ public class UserService {
         user.setSessionEnd(sessionEnd);
 
         userRepository.save(user);
+        return sessionKey;
     }
 
     /* Metoda pomocnicza */

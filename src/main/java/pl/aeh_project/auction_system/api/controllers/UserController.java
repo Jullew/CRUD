@@ -27,8 +27,8 @@ public class UserController {
      * String password;
      */
     @PostMapping(path = "/authentication")
-    public void authentication(@RequestBody @NonNull UserAuthenticationDto user){
-        userService.authentication(user.getLogin(), user.getPassword());
+    public String authentication(@RequestBody @NonNull UserAuthenticationDto user){
+        return userService.authentication(user.getLogin(), user.getPassword());
     }
 
     /**
