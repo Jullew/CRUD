@@ -41,7 +41,6 @@ public class ProductController {
      * WYMAGANE DANE:
      * Long id;
      */
-    /* Zmieniłbym na get/{id} */
     @GetMapping("/get/{id}")
     public Product get(@PathVariable("id") Long id) {
         return productService.get(id);
@@ -57,7 +56,6 @@ public class ProductController {
      * BigDecimal price;
      * LocalDate endDate;
      */
-
     @PostMapping("/add")
     public void add(@RequestBody @NonNull AddProductDto product) {
         userService.loginVerification(product.getLogin(), product.getSessionKey());
@@ -75,7 +73,6 @@ public class ProductController {
      *BigDecimal price;
      *LocalDate endDate;
      */
-
     @PutMapping("/modify")
     public void modify(@RequestBody @NonNull ModifiedProductDto product) {
         userService.loginVerification(product.getLogin(), product.getSessionKey());
@@ -90,7 +87,6 @@ public class ProductController {
      * Long productId;
      * BigDecimal newProductPrice;
      */
-
     @PostMapping("/bid")
     public void bid(@RequestBody @NonNull BidProductDto product) {
         userService.loginVerification(product.getLogin(), product.getSessionKey());
@@ -102,7 +98,6 @@ public class ProductController {
      * WYMAGANE DANE:
      * Long id;
      */
-
     @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable("id") Long id) {
         productService.delete(id);

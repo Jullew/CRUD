@@ -1,6 +1,7 @@
 package pl.aeh_project.auction_system.logic;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.aeh_project.auction_system.api.dto.userDto.AddUserDto;
 import pl.aeh_project.auction_system.api.dto.userDto.ModifiedUserDto;
@@ -9,6 +10,7 @@ import pl.aeh_project.auction_system.domain.repository.UserRepository;
 import pl.aeh_project.auction_system.exceptions.NoUserException;
 import pl.aeh_project.auction_system.exceptions.UnloggedUserException;
 import pl.aeh_project.auction_system.exceptions.WrongLoginException;
+import pl.aeh_project.auction_system.exceptions.WrongPasswordException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     /* Autentykacja użytkownika */
     public String authentication(String login, String password) {
@@ -39,11 +42,15 @@ public class UserService {
     /* Metoda pomocnicza */
     /* Sprawdza istnienie użytkownika i go zwraca, jeżeli istnieje */
     private User checkingExistanceOfUser(String login, String password){
-        Optional<User> optionalUser = userRepository.findUserByLoginAndPassword(login, password);
+        Optional<User> optionalUser = userRepository.findByLogin(login);
         if(optionalUser.isEmpty()){
             throw new NoUserException("There is no such user");
         }
-        return optionalUser.get();
+        User user = optionalUser.get();
+        if(!passwordEncoder.matches(password, user.getPassword())){
+            throw new WrongPasswordException("Entered password is incorrect");
+        }
+        return user;
     }
 
     /* ------------------------------------ */
@@ -74,9 +81,11 @@ public class UserService {
             throw new WrongLoginException("This login already exists");
         }
 
+        String hashedPassword = passwordEncryption(modifiedUserDto.getPassword());
+
         User user = new User();
         user.setLogin(modifiedUserDto.getLogin());
-        user.setPassword(modifiedUserDto.getPassword());
+        user.setPassword(hashedPassword);
         user.setFirstName(modifiedUserDto.getFirstName());
         user.setLastName(modifiedUserDto.getLastName());
 
@@ -91,8 +100,10 @@ public class UserService {
         if(userRepository.findByLogin(addUserDto.getLogin()).isPresent()){
             throw new WrongLoginException("This login already exists");
         }
+        String hashedPassword = passwordEncryption(addUserDto.getPassword());
+
         user.setLogin(addUserDto.getLogin());
-        user.setPassword(addUserDto.getPassword());
+        user.setPassword(hashedPassword);
         user.setFirstName(addUserDto.getFirstName());
         user.setLastName(addUserDto.getLastName());
 
@@ -130,6 +141,11 @@ public class UserService {
         if (optionalUser.isEmpty())  {
             throw new UnloggedUserException("You are not logged in");
         }
+    }
+
+    /* Szyfrowanie hasła */
+    private String passwordEncryption(String password){
+        return passwordEncoder.encode(password);
     }
 
 }
