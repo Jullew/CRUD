@@ -13,6 +13,7 @@ import pl.aeh_project.auction_system.exceptions.WrongLoginException;
 import pl.aeh_project.auction_system.exceptions.WrongPasswordException;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,7 +28,7 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     /* Autentykacja użytkownika */
-    public String authentication(String login, String password) {
+    public HashMap<String, String> authentication(String login, String password) {
         User user = checkingExistanceOfUser(login, password);
 
         String sessionKey = UUID.randomUUID().toString();
@@ -36,7 +37,9 @@ public class UserService {
         user.setSessionEnd(sessionEnd);
 
         userRepository.save(user);
-        return sessionKey;
+        HashMap<String, String> token = new HashMap<>();
+        token.put("token", sessionKey);
+        return token;
     }
 
     /* Metoda pomocnicza */

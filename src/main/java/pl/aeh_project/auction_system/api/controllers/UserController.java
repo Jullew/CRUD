@@ -8,6 +8,7 @@ import pl.aeh_project.auction_system.api.dto.userDto.*;
 import pl.aeh_project.auction_system.domain.entity.User;
 import pl.aeh_project.auction_system.logic.UserService;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -27,7 +28,7 @@ public class UserController {
      * String password;
      */
     @PostMapping(path = "/authentication")
-    public String authentication(@RequestBody @NonNull UserAuthenticationDto user){
+    public HashMap<String, String> authentication(@RequestBody @NonNull UserAuthenticationDto user){
         return userService.authentication(user.getLogin(), user.getPassword());
     }
 
