@@ -37,9 +37,19 @@ public class ProductController {
     }
 
     /**
+     * Pobieranie wszystkich produktów użytkownika o podanym id
+     * WYMAGANE DANE:
+     * Long id (użytkownika);
+     */
+    @GetMapping("/getAllUserProducts/{id}")
+    public List<Product> getUserProducts(@PathVariable Long id){
+        return productService.getAllProductsByUserId(id);
+    }
+
+    /**
      * Pobieranie produktu
      * WYMAGANE DANE:
-     * Long id;
+     * Long id (produktu);
      */
     @GetMapping("/get/{id}")
     public Product get(@PathVariable("id") Long id) {

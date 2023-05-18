@@ -48,6 +48,12 @@ public class ProductService {
 
     /* ------------------------------------ */
 
+    public List<Product> getAllProductsByUserId(Long id){
+        return productRepository.findAllByUserId(id);
+    }
+
+    /* ------------------------------------ */
+
     /* Dodawanie produktu */
     public void saveProductDto(AddProductDto productDTO) {
         Product product = convertProductDtoToEntity(productDTO);
