@@ -39,6 +39,8 @@ public class UserService {
         userRepository.save(user);
         HashMap<String, String> token = new HashMap<>();
         token.put("token", sessionKey);
+        token.put("login" , user.getLogin());
+        token.put("user_id", user.getUserId().toString());
         return token;
     }
 
