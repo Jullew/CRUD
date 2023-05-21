@@ -5,6 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.aeh_project.auction_system.api.dto.userDto.AddUserDto;
 import pl.aeh_project.auction_system.api.dto.userDto.ModifiedUserDto;
+import pl.aeh_project.auction_system.api.dto.userDto.UserDto;
 import pl.aeh_project.auction_system.domain.entity.User;
 import pl.aeh_project.auction_system.domain.repository.UserRepository;
 import pl.aeh_project.auction_system.exceptions.NoUserException;
@@ -61,19 +62,24 @@ public class UserService {
     /* ------------------------------------ */
 
     /* Pobieranie użytkownika po id */
-    public User get(Long id){
+    public UserDto get(Long id){
         Optional<User> optionalUser = userRepository.findById(id);
         if(optionalUser.isEmpty()){
             throw new NoUserException("There is no user with such id");
         }
-        return optionalUser.get();
+        User user = optionalUser.get();
+        return new UserDto(user.getUserId(), user.getLogin(), user.getFirstName(), user.getLastName());
     }
 
     /* ------------------------------------ */
 
     /* Pobieranie wszystkich użytkowników w postaci listy */
-    public List<User> getAll() {
-        return userRepository.findAll();
+    public List<UserDto> getAll() {
+        List<User> allUsers = userRepository.findAll();
+        return allUsers
+                .stream()
+                .map(user -> new UserDto(user.getUserId(), user.getLogin(), user.getFirstName(), user.getLastName()))
+                .toList();
     }
 
     /* ------------------------------------ */

@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import pl.aeh_project.auction_system.api.dto.userDto.*;
-import pl.aeh_project.auction_system.domain.entity.User;
 import pl.aeh_project.auction_system.logic.UserService;
 
 import java.util.HashMap;
@@ -38,7 +37,7 @@ public class UserController {
      * Long id;
      */
     @GetMapping("/get/{id}")
-    public User get(@PathVariable("id") Long id){
+    public UserDto get(@PathVariable("id") Long id){
         return userService.get(id);
     }
 
@@ -48,7 +47,7 @@ public class UserController {
      * brak;
      */
     @PostMapping("/getAll")
-    public List<User> getAll() {
+    public List<UserDto> getAll() {
         return userService.getAll();
     }
 
