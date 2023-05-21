@@ -109,8 +109,8 @@ public class ProductController {
      *BigDecimal price;
      *LocalDate endDate;
      */
-    @PutMapping("/modify")
-    public void modify(@RequestBody @NonNull ModifiedProductDto product) {
+    @PutMapping("/update")
+    public void update(@RequestBody @NonNull ModifiedProductDto product) {
         userService.loginVerification(product.getLogin(), product.getSessionKey());
         productService.saveModifiedProductDto(product);
     }
