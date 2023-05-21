@@ -12,4 +12,10 @@ import java.util.List;
   konkretny standard określający przebieg komunikacji między programem a bazą danych */
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllByUserId(Long id);
+
+    List<Product> findAllByCustomerId(Long id);
+
+
+
+
 }

@@ -1,9 +1,6 @@
 package pl.aeh_project.auction_system.domain.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -29,5 +26,4 @@ public class User {
     private String lastName;
     private String sessionKey;
     private LocalDateTime sessionEnd;
-
 }

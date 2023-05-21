@@ -26,6 +26,7 @@ public class ProductController {
     private final UserService userService;
 
 
+
     /**
      * Pobieranie wszystkich produktów
      * WYMAGANE DANE:
@@ -43,7 +44,32 @@ public class ProductController {
      */
     @GetMapping("/getAllUserProducts/{id}")
     public List<Product> getUserProducts(@PathVariable Long id){
+        userService.loginVerification(id);
         return productService.getAllProductsByUserId(id);
+    }
+
+    /**
+     * Pobieranie listy produktów wylicytowanych przez użytkownika
+     * * (licytacja się zakończyła, a oferta zaproponowana przez użytkownika jest najwyższa)
+     * WYMAGANE DANE:
+     * Long id (użytkownika);
+     */
+    @GetMapping("/getPurchasedProducts/{id}")
+    public List<Product> purchasedProducts(@PathVariable Long id){
+        userService.loginVerification(id);
+        return productService.getPurchasedProducts(id);
+    }
+
+    /**
+     * Pobieranie listy produktów licytowanych przez użytkownika
+     * (licytacja się jeszcze nie zakończyła, a oferta zaproponowana przez użytkownika jest wciąż najwyższa)
+     * WYMAGANE DANE:
+     * Long id (użytkownika);
+     */
+    @GetMapping("/getAuctionedProducts/{id}")
+    public List<Product> getAuctionedProducts(@PathVariable Long id){
+        userService.loginVerification(id);
+        return productService.getAuctionedProducts(id);
     }
 
     /**

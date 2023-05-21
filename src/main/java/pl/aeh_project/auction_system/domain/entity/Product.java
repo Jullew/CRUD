@@ -36,6 +36,4 @@ public class Product {
     private BigDecimal price;
     private Long customerId;
     private LocalDate endDate;
-
-
 }

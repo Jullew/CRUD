@@ -12,6 +12,7 @@ import pl.aeh_project.auction_system.domain.repository.UserRepository;
 import pl.aeh_project.auction_system.exceptions.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,8 +49,29 @@ public class ProductService {
 
     /* ------------------------------------ */
 
+    /* Pobieranie wszystkich produktów danego użytkownika */
     public List<Product> getAllProductsByUserId(Long id){
         return productRepository.findAllByUserId(id);
+    }
+
+    /* ------------------------------------ */
+
+    /* Pobieranie wylicytowanych przez użytkownika produktów */
+    public List<Product> getPurchasedProducts(Long id){
+        return productRepository.findAllByCustomerId(id)
+                .stream()
+                .filter(product -> product.getEndDate().isBefore(LocalDate.now()))
+                .toList();
+    }
+
+    /* ------------------------------------ */
+
+    /* Pobieranie licytowanych przez użytkownika produktów */
+    public List<Product> getAuctionedProducts(Long id){
+        return productRepository.findAllByCustomerId(id)
+                .stream()
+                .filter(product -> product.getEndDate().isAfter(LocalDate.now()))
+                .toList();
     }
 
     /* ------------------------------------ */
@@ -147,7 +169,26 @@ public class ProductService {
 
     /* Usuwanie produktu po id */
     public void delete(Long id) {
+        checkingConditionsDuringProductRemoval(id);
         productRepository.deleteById(id);
+    }
+
+    /* Metoda pomocnicza do metody delete */
+    /* Sprawdzenie, czy użytkownik, który jest właścicielem produktu jest zalogowany */
+    private void checkingConditionsDuringProductRemoval(Long id){
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if(optionalProduct.isEmpty()){
+            throw new NoProductException("There is no product with such id");
+        }
+        Product product = optionalProduct.get();
+        Optional<User> optionalUser = userRepository.findUserByUserId(product.getUserId());
+        if(optionalUser.isEmpty()){
+            throw new NoUserException("There is no user with such id");
+        }
+        User user = optionalUser.get();
+        if(userRepository.findUserByUserIdAndSessionKeyAndSessionEndIsAfter(user.getUserId(), user.getSessionKey(), LocalDateTime.now()).isEmpty()){
+            throw new UnloggedUserException("You are logged out");
+        }
     }
 
     /* ------------------------------------ */

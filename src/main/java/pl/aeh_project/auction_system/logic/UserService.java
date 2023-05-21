@@ -137,7 +137,22 @@ public class UserService {
         }
     }
 
-    /* Weryfikacja zalogowania na potrzeby klasy ProductController */
+    /* Weryfikacja zalogowania użytkownika po id */
+    public void loginVerification(Long id){
+        Optional<User> optionalUser = userRepository.findUserByUserId(id);
+        if(optionalUser.isEmpty()){
+            throw new NoUserException("There is no such user");
+        }
+        User user = optionalUser.get();
+        if (userRepository
+                .findUserByLoginAndSessionKeyAndSessionEndIsAfter
+                        (user.getLogin(), user.getSessionKey(), LocalDateTime.now()).isEmpty())  {
+            throw new UnloggedUserException("You are not logged in");
+        }
+
+    }
+
+    /* Weryfikacja zalogowania użytkownika po loginie */
     public void loginVerification(String login, String sessionKey){
         Optional<User> optionalUser = userRepository
                 .findUserByLoginAndSessionKeyAndSessionEndIsAfter(login, sessionKey, LocalDateTime.now());

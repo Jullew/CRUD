@@ -13,12 +13,13 @@ import java.util.Optional;
   konkretny standard określający przebieg komunikacji między programem a bazą danych */
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findUserByLoginAndPassword(String login, String password);
 
     Optional<User> findUserByLoginAndSessionKeyAndSessionEndIsAfter(String login, String sessionKey, LocalDateTime sessionEnd);
 
     Optional<User> findUserByUserIdAndSessionKeyAndSessionEndIsAfter(Long id, String sessionKey, LocalDateTime sessionEnd);
 
     Optional<User> findByLogin(String login);
+    Optional<User> findUserByUserId(Long id);
+
 }
 
