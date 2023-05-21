@@ -55,7 +55,7 @@ public class ProductController {
      * Long id (użytkownika);
      */
     @GetMapping("/getPurchasedProducts/{id}")
-    public List<Product> purchasedProducts(@PathVariable Long id){
+    public List<Product> getPurchasedProducts(@PathVariable Long id){
         userService.loginVerification(id);
         return productService.getPurchasedProducts(id);
     }
