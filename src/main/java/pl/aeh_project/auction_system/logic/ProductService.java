@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.aeh_project.auction_system.api.dto.productDto.ModifiedProductDto;
 import pl.aeh_project.auction_system.api.dto.productDto.BidProductDto;
 import pl.aeh_project.auction_system.api.dto.productDto.AddProductDto;
+import pl.aeh_project.auction_system.api.dto.productDto.ProductDto;
 import pl.aeh_project.auction_system.domain.entity.Product;
 import pl.aeh_project.auction_system.domain.entity.User;
 import pl.aeh_project.auction_system.domain.repository.ProductRepository;
@@ -13,6 +14,7 @@ import pl.aeh_project.auction_system.exceptions.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,8 +28,43 @@ public class ProductService {
 
 
     /* Pobieranie wszystkich produktów w postaci listy */
-    public List<Product> getAll() {
-        return productRepository.findAll();
+    public List<ProductDto> getAll() {
+        List<Product> products = productRepository.findAll();
+        List<ProductDto> productsDto = new LinkedList<>();
+        for(var product : products){
+            Optional<User> optionalUser = userRepository.findUserByUserId(product.getCustomerId());
+            if(optionalUser.isEmpty()){
+                productsDto.add(
+                        new ProductDto(
+                                product.getProductId(),
+                                product.getUserId(),
+                                product.getTitle(),
+                                product.getDescription(),
+                                product.getPrice(),
+                                product.getCustomerId(),
+                                "",
+                                "",
+                                product.getEndDate()
+                                )
+                );
+            }else{
+                User user = optionalUser.get();
+                productsDto.add(
+                        new ProductDto(
+                                product.getProductId(),
+                                product.getUserId(),
+                                product.getTitle(),
+                                product.getDescription(),
+                                product.getPrice(),
+                                product.getCustomerId(),
+                                user.getFirstName(),
+                                user.getLastName(),
+                                product.getEndDate()
+                                )
+                );
+            }
+        }
+        return productsDto;
     }
 
     /* ------------------------------------ */

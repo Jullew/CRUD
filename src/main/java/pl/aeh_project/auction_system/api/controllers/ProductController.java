@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pl.aeh_project.auction_system.api.dto.productDto.ModifiedProductDto;
 import pl.aeh_project.auction_system.api.dto.productDto.BidProductDto;
 import pl.aeh_project.auction_system.api.dto.productDto.AddProductDto;
+import pl.aeh_project.auction_system.api.dto.productDto.ProductDto;
 import pl.aeh_project.auction_system.domain.entity.Product;
 import pl.aeh_project.auction_system.logic.ProductService;
 import pl.aeh_project.auction_system.logic.UserService;
@@ -33,7 +34,7 @@ public class ProductController {
      * brak;
      */
     @GetMapping("/getAll")
-    public List<Product> getAll() {
+    public List<ProductDto> getAll() {
         return productService.getAll();
     }
 
