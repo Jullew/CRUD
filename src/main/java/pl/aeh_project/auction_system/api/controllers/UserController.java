@@ -77,7 +77,7 @@ public class UserController {
      * String sessionKey;
      */
     @PutMapping("/modify")
-    public void modify(@RequestBody @NonNull ModifiedUserDto user) {
+    public void update(@RequestBody @NonNull ModifiedUserDto user) {
         userService.update(user);
     }
 
