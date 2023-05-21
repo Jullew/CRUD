@@ -79,6 +79,7 @@ public class ProductService {
     /* Dodawanie produktu */
     public void saveProductDto(AddProductDto productDTO) {
         Product product = convertProductDtoToEntity(productDTO);
+        product.setCustomerId(0L);
         productRepository.save(product);
     }
 
