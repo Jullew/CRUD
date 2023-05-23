@@ -44,7 +44,7 @@ public class ProductController {
      * Long id (użytkownika);
      */
     @GetMapping("/getAllUserProducts/{id}")
-    public List<Product> getUserProducts(@PathVariable Long id){
+    public List<ProductDto> getUserProducts(@PathVariable Long id){
         userService.loginVerification(id);
         return productService.getAllProductsByUserId(id);
     }

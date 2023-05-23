@@ -12,6 +12,12 @@ import pl.aeh_project.auction_system.exceptions.*;
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 
+
+    @ExceptionHandler(ProductUpdateException.class)
+    public ResponseEntity<Object> handle(ProductUpdateException productUpdateException){
+        return new ResponseEntity<>(productUpdateException.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(WrongPasswordException.class)
     public ResponseEntity<Object> handle(WrongPasswordException wrongPasswordException){
         return new ResponseEntity<>(wrongPasswordException.getMessage(), HttpStatus.BAD_REQUEST);

@@ -30,41 +30,47 @@ public class ProductService {
     /* Pobieranie wszystkich produktów w postaci listy */
     public List<ProductDto> getAll() {
         List<Product> products = productRepository.findAll();
+        return convertProductListToProductDtoList(products);
+    }
+
+    /* ------------------------------------ */
+
+    /* Pobieranie wszystkich produktów danego użytkownika */
+    public List<ProductDto> getAllProductsByUserId(Long id){
+        List<Product> products = productRepository.findAllByUserId(id);
+        return convertProductListToProductDtoList(products);
+    }
+
+    /* Metoda pomocnicza dla metod getAll() §i getAllProductsByUserId */
+    /* Konwertowanie List<Product do List<ProductDto  */
+    private List<ProductDto> convertProductListToProductDtoList(List<Product> products){
         List<ProductDto> productsDto = new LinkedList<>();
         for(var product : products){
+            ProductDto dto = createProductDto(product);
             Optional<User> optionalUser = userRepository.findUserByUserId(product.getCustomerId());
             if(optionalUser.isEmpty()){
-                productsDto.add(
-                        new ProductDto(
-                                product.getProductId(),
-                                product.getUserId(),
-                                product.getTitle(),
-                                product.getDescription(),
-                                product.getPrice(),
-                                product.getCustomerId(),
-                                "",
-                                "",
-                                product.getEndDate()
-                                )
-                );
+                dto.setCustomerId(0L);
+                dto.setCustomerFirstName("");
+                dto.setCustomerLastName("");
             }else{
-                User user = optionalUser.get();
-                productsDto.add(
-                        new ProductDto(
-                                product.getProductId(),
-                                product.getUserId(),
-                                product.getTitle(),
-                                product.getDescription(),
-                                product.getPrice(),
-                                product.getCustomerId(),
-                                user.getFirstName(),
-                                user.getLastName(),
-                                product.getEndDate()
-                                )
-                );
+                dto.setCustomerId(product.getCustomerId());
+                dto.setCustomerFirstName(optionalUser.get().getFirstName());
+                dto.setCustomerLastName(optionalUser.get().getLastName());
             }
+            productsDto.add(dto);
         }
         return productsDto;
+    }
+
+    private ProductDto createProductDto(Product product) {
+        ProductDto dto = new ProductDto();
+        dto.setProductId(product.getProductId());
+        dto.setUserId(product.getUserId());
+        dto.setTitle(product.getTitle());
+        dto.setDescription(product.getDescription());
+        dto.setPrice(product.getPrice());
+        dto.setEndDate(product.getEndDate());
+        return dto;
     }
 
     /* ------------------------------------ */
@@ -82,13 +88,6 @@ public class ProductService {
             throw new NoProductException("There is no product with such id");
         }
         return optionalProduct.get();
-    }
-
-    /* ------------------------------------ */
-
-    /* Pobieranie wszystkich produktów danego użytkownika */
-    public List<Product> getAllProductsByUserId(Long id){
-        return productRepository.findAllByUserId(id);
     }
 
     /* ------------------------------------ */
@@ -140,19 +139,25 @@ public class ProductService {
 
     /* Modyfikowanie produktu */
     public void saveModifiedProductDto(ModifiedProductDto modifiedProductDTO){
+        Optional<User> optionalUser = userRepository.findByLogin(modifiedProductDTO.getLogin());
+        if(optionalUser.isEmpty()){
+            throw new NoUserException("There is no user with such login");
+        }
+        User user = optionalUser.get();
         Product product = convertModifiedProductDtoToEntity(modifiedProductDTO);
+        if(!user.getUserId().equals(product.getUserId())){
+            throw new ProductUpdateException("You are not the owner of this product");
+        }
         productRepository.save(product);
     }
 
     /* Metoda pomocnicza dla metody saveModifiedProductDto */
     /* Konwertowanie modifiedProductDto do product */
     private Product convertModifiedProductDtoToEntity(ModifiedProductDto modifyProductDTO) {
-        User user = getUser(modifyProductDTO.getLogin());
 
-        Product product = new Product();
+        Optional<Product> optionalProduct = productRepository.findById(modifyProductDTO.getProductId());
+        Product product = productVerification(optionalProduct);
 
-        product.setProductId(modifyProductDTO.getProductId());
-        product.setUserId(user.getUserId());
         product.setTitle(modifyProductDTO.getTitle());
         product.setDescription(modifyProductDTO.getDescription());
         product.setPrice(modifyProductDTO.getPrice());
@@ -160,6 +165,19 @@ public class ProductService {
 
         return product;
 
+    }
+
+    /* Metoda pomocnicza dla metody convertModifiedProductDtoToEntity */
+    /* Weryfikacja produktu */
+    private Product productVerification(Optional<Product> optionalProduct){
+        if(optionalProduct.isEmpty()){
+            throw new ProductUpdateException("There is no such product");
+        }
+        Product product = optionalProduct.get();
+        if(!(product.getProductId() == null || product.getCustomerId().equals(0L))){
+            throw new ProductUpdateException("This product cannot be modified because it is already being auctioned");
+        }
+        return product;
     }
 
     /* ------------------------------------ */
